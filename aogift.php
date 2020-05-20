@@ -33,7 +33,7 @@ class AoGift extends Module implements WidgetInterface
     {
         $this->name      = 'aogift';
         $this->author    = 'Lathanao';
-        $this->version   = '1.1.0';
+        $this->version   = '1.1.1';
         $this->module_key = '507058b20c4e63da25824a309a10d674';
         $this->tab       = 'front_office_features';
         $this->bootstrap = true;
@@ -41,17 +41,22 @@ class AoGift extends Module implements WidgetInterface
         parent::__construct();
 
         $this->displayName = $this->trans('Free gift on first order', array(), $this->name . '.Admin');
-        $this->description = $this->trans('Add a free gift an cart page on first order.', array(), $this->name . '.Admin');
+        $this->description = $this->trans(
+            'Add a free gift an cart page on first order.',
+            array(),
+            $this->name . '.Admin'
+        );
         $this->ps_versions_compliancy = array('min' => '1.7.0.0', 'max' => _PS_VERSION_);
     }
 
     public function install()
     {
-        $this->checkSetup();
-        $this->registerHook('displayShoppingCartFooter');
-        $this->registerHook('ShoppingCartFooter');
-        $this->registerHook('displayHeader');
-        return parent::install();
+        return (parent::install()
+            && $this->registerHook('displayShoppingCartFooter')
+            && $this->registerHook('ShoppingCartFooter')
+            && $this->registerHook('displayHeader')
+            && $this->checkSetup()
+        );
     }
 
     public function uninstall()
@@ -269,10 +274,10 @@ class AoGift extends Module implements WidgetInterface
         foreach ($newSetup as $key => $value) {
             if (array_key_exists($key, $this->setup)) {
                 Configuration::updateValue($key, $value, true /*HTML*/) && $updated[$key] = $value;
-            } elseif (array_key_exists(Tools::substr()($key, 0, -2), $this->setup)) {
+            } elseif (array_key_exists(Tools::substr($key, 0, -2), $this->setup)) {
                 Configuration::updateValue(
-                    Tools::substr()($key, 0, -2),
-                    array(Tools::substr()($key, -1) => $value),
+                    Tools::substr($key, 0, -2),
+                    array(Tools::substr($key, -1) => $value),
                     true
                 );
                 $updated[$key] = $value;
@@ -322,6 +327,7 @@ class AoGift extends Module implements WidgetInterface
 
     public function renderWidget($hookName = null, array $configuration = [])
     {
+
         if (!isset($this->templateFile[$hookName])) {
             $hookName = 'displayShoppingCartFooter';
         }
@@ -391,7 +397,6 @@ class AoGift extends Module implements WidgetInterface
             'discount_name' => (new CartRule((int)Configuration::get('AO_GIFT_ID_RULE')))->code,
             'token' => Tools::getToken(false),
             'setup_'.$this->name => $this->getSetup(),
-//            'product' => new product((int)Configuration::get('AO_GIFT_ID_PRODUCT'), true, $this->context->language->id)
             'product' => $product_for_template
         );
     }

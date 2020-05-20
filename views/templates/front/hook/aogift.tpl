@@ -41,11 +41,11 @@
             <h1 class="h1">{$product->name|escape:'htmlall':'UTF-8'}</h1>
 
           {block name='product_description_short'}
-            <div id="product-description-short" itemprop="description">{$product.description_short|escape:'htmlall':'UTF-8'}</div>
+            <div id="product-description-short" itemprop="description">{$product.description_short nofilter}</div>
           {/block}
 
           {block name='product_description'}
-            <div id="product-description-short" itemprop="description">{$product.description|escape:'htmlall':'UTF-8'}</div>
+            <div id="product-description-short" itemprop="description">{$product.description nofilter}</div>
           {/block}
 
           </div>
@@ -55,8 +55,7 @@
       <div class="modal-footer">
           {block name='product_buy'}
             <div class="product-actions">
-              <form action="{$urlCartAddRule:'htmlall':'UTF-8'}" method="post">
-                <input type="hidden" name="token" value="5f755f8226b22f2922f3eda9cb08d827">
+              <form action="{$urlCartAddRule|escape:'htmlall':'UTF-8'}" method="post">
                 <input type="hidden" name="addDiscount" value="{$addDiscount|escape:'htmlall':'UTF-8'}">
                 <input type="hidden" name="discount_name" value="{$discount_name|escape:'htmlall':'UTF-8'}">
                 <input type="hidden" name="action" value="show">
